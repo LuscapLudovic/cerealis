@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart'
-    show ArCoreController, ArCoreCube, ArCoreCylinder, ArCoreMaterial, ArCoreNode, ArCoreSphere, ArCoreView;
+    show ArCoreController, ArCoreCube, ArCoreCylinder, ArCoreMaterial, ArCoreNode, ArCoreReferenceNode, ArCoreSphere, ArCoreView;
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 void main() async {
@@ -37,9 +37,19 @@ class _HelloWorldState extends State<HelloWorld> {
   void _onArCoreViewCreated(ArCoreController controller) {
     arCoreController = controller;
 
-    _addSphere(arCoreController);
-    _addCylindre(arCoreController);
-    _addCube(arCoreController);
+    _addMonkey(controller);
+
+  }
+
+  void _addMonkey(ArCoreController controller)  {
+    final node = ArCoreReferenceNode(
+      name: 'snake',
+      object3DFileName: 'snake.sfb',
+      position: vector.Vector3(0, 0, 0),
+      scale: vector.Vector3(0.1,0.1,0.1)
+    );
+    print("affichage singe");
+    controller.addArCoreNode(node);
   }
 
   void _addSphere(ArCoreController controller) {
