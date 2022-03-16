@@ -12,5 +12,4 @@ jobs:
       - name: Build web
         run: |
           flutter pub get
-          flutter analyze
           flutter build web
