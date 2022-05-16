@@ -50,8 +50,8 @@ class _HelloWorldState extends State<HelloWorld> {
 
   void _addMonkey(ArCoreController controller) {
     final node = ArCoreReferenceNode(
-        name: 'snake',
-        object3DFileName: 'snake.sfb',
+        name: 'SnakeCentered',
+        object3DFileName: 'SnakeCentered.sfb',
         position: vector.Vector3(0, 0, 0),
         scale: vector.Vector3(0.1, 0.1, 0.1));
     print("affichage singe");

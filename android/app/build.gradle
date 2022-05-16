@@ -78,8 +78,8 @@ dependencies {
 apply plugin: 'com.google.ar.sceneform.plugin'
 
 sceneform.asset(
-        'assets/snake.obj',
+        'assets/SnakeCentered.obj',
         'default',
-        'assets/snake.sfa',
-        'src/main/assets/snake'
+        'assets/SnakeCentered.sfa',
+        'src/main/assets/SnakeCentered'
 )
