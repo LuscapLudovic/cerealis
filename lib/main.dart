@@ -39,6 +39,7 @@ class _HelloWorldState extends State<HelloWorld> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Color(0xfff5f5f5),
         appBar: AppBar(
           title: const Text('Cerealis'),
           actions: <Widget>[
@@ -50,8 +51,11 @@ class _HelloWorldState extends State<HelloWorld> {
         ),
         body: Screenshot(
           controller: _screenshotController,
-          child: ArCoreView(
-            onArCoreViewCreated: _onArCoreViewCreated,
+          child: Container(
+            color: Colors.white,
+            child: ArCoreView(
+              onArCoreViewCreated: _onArCoreViewCreated,
+            )
           )
         ),
       ),
