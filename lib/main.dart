@@ -39,7 +39,6 @@ class _HelloWorldState extends State<HelloWorld> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Color(0xfff5f5f5),
         appBar: AppBar(
           title: const Text('Cerealis'),
           actions: <Widget>[
@@ -63,7 +62,7 @@ class _HelloWorldState extends State<HelloWorld> {
   }
 
   void _takeScreenshot() async {
-    final uint8List = await _screenshotController.capture();
+    final uint8List = await _screenshotController.capture(delay: Duration(milliseconds: 10));
     String tempPath = (await getTemporaryDirectory()).path;
     File file = File('$tempPath/image.png');
     if(uint8List != null) {
