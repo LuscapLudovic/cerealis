@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart'
     show
@@ -9,6 +12,9 @@ import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart'
         ArCoreReferenceNode,
         ArCoreSphere,
         ArCoreView;
+import 'package:screenshot/screenshot.dart';
+import 'package:share/share.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 void main() async {
@@ -26,6 +32,7 @@ class HelloWorld extends StatefulWidget {
 }
 
 class _HelloWorldState extends State<HelloWorld> {
+  final _screenshotController = ScreenshotController();
   late ArCoreController arCoreController;
 
   @override
@@ -33,13 +40,32 @@ class _HelloWorldState extends State<HelloWorld> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Hello World'),
+          title: const Text('Cerealis'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.photo_camera),
+              onPressed: _takeScreenshot,
+            ),
+          ],
         ),
-        body: ArCoreView(
-          onArCoreViewCreated: _onArCoreViewCreated,
+        body: Screenshot(
+          controller: _screenshotController,
+          child: ArCoreView(
+            onArCoreViewCreated: _onArCoreViewCreated,
+          )
         ),
       ),
     );
+  }
+
+  void _takeScreenshot() async {
+    final uint8List = await _screenshotController.capture();
+    String tempPath = (await getTemporaryDirectory()).path;
+    File file = File('$tempPath/image.png');
+    if(uint8List != null) {
+      await file.writeAsBytes(uint8List);
+      await Share.shareFiles([file.path]);
+    }
   }
 
   void _onArCoreViewCreated(ArCoreController controller) {
