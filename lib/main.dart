@@ -32,8 +32,11 @@ class HelloWorld extends StatefulWidget {
 }
 
 class _HelloWorldState extends State<HelloWorld> {
+  final TextEditingController _textEditingController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _screenshotController = ScreenshotController();
   late ArCoreController arCoreController;
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +49,27 @@ class _HelloWorldState extends State<HelloWorld> {
               icon: const Icon(Icons.photo_camera),
               onPressed: _takeScreenshot,
             ),
+            IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () async {
+                  print("Opendialog pour test si ça fonctionne");
+                  openDialog();
+                },
+            )
           ],
         ),
         body: Screenshot(
           controller: _screenshotController,
           child: Container(
-            color: Colors.white,
-            child: ArCoreView(
-              onArCoreViewCreated: _onArCoreViewCreated,
+            child: Center(
+              child: ArCoreView(
+                onArCoreViewCreated: _onArCoreViewCreated,
+                )
+              )
             )
           )
         ),
-      ),
-    );
+      );
   }
 
   void _takeScreenshot() async {
@@ -87,51 +98,30 @@ class _HelloWorldState extends State<HelloWorld> {
     controller.addArCoreNode(node);
   }
 
-  void _addSphere(ArCoreController controller) {
-    final material = ArCoreMaterial(color: Color.fromARGB(120, 66, 134, 244));
-    final sphere = ArCoreSphere(
-      materials: [material],
-      radius: 0.1,
-    );
-    final node = ArCoreNode(
-      shape: sphere,
-      position: vector.Vector3(0, 0, -1.5),
-    );
-    controller.addArCoreNode(node);
-  }
-
-  void _addCylindre(ArCoreController controller) {
-    final material = ArCoreMaterial(
-      color: Colors.red,
-      reflectance: 1.0,
-    );
-    final cylindre = ArCoreCylinder(
-      materials: [material],
-      radius: 0.5,
-      height: 0.3,
-    );
-    final node = ArCoreNode(
-      shape: cylindre,
-      position: vector.Vector3(0.0, -0.5, -2.0),
-    );
-    controller.addArCoreNode(node);
-  }
-
-  void _addCube(ArCoreController controller) {
-    final material = ArCoreMaterial(
-      color: Color.fromARGB(120, 66, 134, 244),
-      metallic: 1.0,
-    );
-    final cube = ArCoreCube(
-      materials: [material],
-      size: vector.Vector3(0.5, 0.5, 0.5),
-    );
-    final node = ArCoreNode(
-      shape: cube,
-      position: vector.Vector3(-0.5, 0.5, -3.5),
-    );
-    controller.addArCoreNode(node);
-  }
+  Future openDialog() => showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text('SetState in dialog'),
+          content: CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              title: Text(
+                isChecked ? 'Yes' : 'No',
+                style: TextStyle(fontSize: 24),
+              ),
+              value: isChecked,
+              onChanged: (isChecked) =>
+                  setState(() => this.isChecked = isChecked!)
+          ),
+          actions: [
+            TextButton(
+              child: Text('SUBMIT'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      )
+  );
 
   @override
   void dispose() {
