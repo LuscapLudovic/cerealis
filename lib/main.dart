@@ -41,7 +41,27 @@ class _HelloWorldState extends State<HelloWorld> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
+      home:
+      );
+  }
+
+  @override
+  void dispose() {
+    arCoreController.dispose();
+    super.dispose();
+  }
+}
+
+class MyApp extends StatelessWidget {
+  final TextEditingController _textEditingController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _screenshotController = ScreenshotController();
+  late ArCoreController arCoreController;
+  bool isChecked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
         appBar: AppBar(
           title: const Text('Cerealis'),
           actions: <Widget>[
@@ -49,38 +69,37 @@ class _HelloWorldState extends State<HelloWorld> {
               icon: const Icon(Icons.photo_camera),
               onPressed: _takeScreenshot,
             ),
-            IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () async {
-                  print("Opendialog pour test si ça fonctionne");
-                  openDialog();
-                },
+            TextButton(
+              child: Text('Join'),
+              onPressed: () async {
+                openDialog();
+              },
             )
           ],
         ),
         body: Screenshot(
-          controller: _screenshotController,
-          child: Container(
-            child: Center(
-              child: ArCoreView(
-                onArCoreViewCreated: _onArCoreViewCreated,
+            controller: _screenshotController,
+            child: Container(
+                child: Center(
+                    child: ArCoreView(
+                      onArCoreViewCreated: _onArCoreViewCreated,
+                    )
                 )
-              )
             )
-          )
-        ),
-      );
+        )
+    );
   }
 
-  void _takeScreenshot() async {
+
+    void _takeScreenshot() async {
     final uint8List = await _screenshotController.capture(delay: Duration(milliseconds: 10));
     String tempPath = (await getTemporaryDirectory()).path;
     File file = File('$tempPath/image.png');
-    if(uint8List != null) {
-      await file.writeAsBytes(uint8List);
-      await Share.shareFiles([file.path]);
+      if(uint8List != null) {
+        await file.writeAsBytes(uint8List);
+        await Share.shareFiles([file.path]);
+      }
     }
-  }
 
   void _onArCoreViewCreated(ArCoreController controller) {
     arCoreController = controller;
@@ -98,34 +117,13 @@ class _HelloWorldState extends State<HelloWorld> {
     controller.addArCoreNode(node);
   }
 
-  Future openDialog() => showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text('SetState in dialog'),
-          content: CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              title: Text(
-                isChecked ? 'Yes' : 'No',
-                style: TextStyle(fontSize: 24),
-              ),
-              value: isChecked,
-              onChanged: (isChecked) =>
-                  setState(() => this.isChecked = isChecked!)
-          ),
-          actions: [
-            TextButton(
-              child: Text('SUBMIT'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      )
-  );
 
-  @override
-  void dispose() {
-    arCoreController.dispose();
-    super.dispose();
+  Future<void> openDialog(BuildContext context) async {
+    return await showDialog(context: context,
+    builder: (context){
+      return AlertDialog(
+
+      );
+    });
   }
 }
