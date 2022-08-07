@@ -15,7 +15,9 @@ import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart'
 import 'package:screenshot/screenshot.dart';
 import 'package:share/share.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:untitled/api_service.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +43,7 @@ class _HelloWorldState extends State<HelloWorld> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home:
+      home: MyApp(),
       );
   }
 
@@ -54,6 +56,8 @@ class _HelloWorldState extends State<HelloWorld> {
 
 class MyApp extends StatelessWidget {
   final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController name = TextEditingController();
+  final TextEditingController email = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _screenshotController = ScreenshotController();
   late ArCoreController arCoreController;
@@ -69,10 +73,10 @@ class MyApp extends StatelessWidget {
               icon: const Icon(Icons.photo_camera),
               onPressed: _takeScreenshot,
             ),
-            TextButton(
-              child: Text('Join'),
+            IconButton(
+              icon: const Icon(Icons.add),
               onPressed: () async {
-                openDialog();
+                openDialog(context);
               },
             )
           ],
@@ -122,8 +126,42 @@ class MyApp extends StatelessWidget {
     return await showDialog(context: context,
     builder: (context){
       return AlertDialog(
-
+        content: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: name,
+                validator: (value){
+                  return value!.isNotEmpty ? null : "Invalid field";
+                },
+                decoration: InputDecoration(hintText: "Name"),
+              ),
+              TextFormField(
+                controller: email,
+                validator: (value){
+                  return value!.isNotEmpty ? null : "Invalid field";
+                },
+                decoration: InputDecoration(hintText: "Email"),
+              )
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Ok'),
+            onPressed: (){
+              if(_formKey.currentState!.validate()){
+                postCustomer(name: name.text, email: email.text).whenComplete(() => Navigator.pop(context));
+              }
+            })
+        ],
       );
     });
+  }
+
+  Future<bool> postCustomer({required String name, required String email}) async {
+    return await ApiService.postUser(name: name, email: email);
   }
 }

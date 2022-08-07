@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 class ApiService {
-  static final String apiUrl = "127.0.0.1:8008";
+  static final String apiUrl = "192.168.1.54:8008";
 
   static Future<dynamic> post({required String url, data}) async {
     http.Response resp = await http.post(Uri.http(apiUrl, "/api" + url),
